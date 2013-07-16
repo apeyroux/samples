@@ -6,13 +6,26 @@
 
 struct user_s {
 	char *name;
-	int age;
+	uint age;
 	LIST_ENTRY(user_s) users;
 };
 
 typedef struct user_s user_t;
 
+user_t *newuser(char *name, uint age) {
+	user_t *u = NULL;
+	if(NULL == (u = (user_t *) malloc(sizeof(user_t))))
+		return NULL;
+
+	u->name = strdup(name);
+	u->age = age;
+
+	fprintf(stdout, "new %s p:%p\n", u->name, u);
+	return u;
+}
+
 void freeuser(user_t *u) {
+	fprintf(stdout, "free %s p:%p\n", u->name, u);
 	free(u->name);
 	free(u);
 	u = NULL;
@@ -24,20 +37,14 @@ int main(int ac, char **av) {
 	user_t *u2 = NULL;
 	user_t *np = NULL;
 
-	if(NULL == (u1  = (user_t *) malloc(sizeof(user_t))))
+	if(NULL == (u1  = newuser("J4", 31)))
 		return EXIT_FAILURE;
 
-	if(NULL == (u2 = (user_t *) malloc(sizeof(user_t))))
+	if(NULL == (u2 = newuser("Angel", 30)))
 		return EXIT_FAILURE;
 
 	if(NULL == (np = (user_t *) malloc(sizeof(user_t))))
 		return EXIT_FAILURE;
-
-	u1->name = strdup("j4");
-	u1->age = 31;
-
-	u2->name = strdup("Angel");
-	u2->age = 30;
 
 	LIST_HEAD(listusers, user_s) head;
 
@@ -58,11 +65,9 @@ int main(int ac, char **av) {
 
 	while (head.lh_first != NULL) {
 		fprintf(stdout, "Delete %s\n", head.lh_first->name);
+		freeuser(head.lh_first);
 		LIST_REMOVE(head.lh_first, users);
 	}
-
-	freeuser(u1);
-	freeuser(u2);
 
 	return EXIT_SUCCESS;
 }
