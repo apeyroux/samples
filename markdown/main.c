@@ -1,16 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <mkdio.h>
 
-#define MKD_EXEMPLE "My title\n---\n\nUne *intro* ? pour _quoi_ ?"
-#define CUTE "\n---- 8< ---- 8< ---- 8< ---- 8< ---- 8< ----\n"
+void usage() {
+	fprintf(stdout, "uage -i file.mkd\n");
+	exit(0);
+}
 
-int main(void) {
-	char *out = NULL;
-	int sizeout;
+int main(int ac, char **av) {
+	char *out, *pathin;
+	FILE *fin;
+	int sizeout, ch;
 
-	MMIOT *doc = mkd_string(MKD_EXEMPLE, strlen(MKD_EXEMPLE)+1, 0);
+	while(-1 != (ch = getopt(ac, av, "i:"))) {
+		switch(ch) {
+			case 'i':
+				pathin = optarg;
+				break;
+			default:
+				break;
+		}
+	}
+
+	if(!pathin)
+		usage();
+
+	if(NULL == (fin = fopen(pathin, "r"))) {
+		fprintf(stderr, "error: can't fopen on %s\n", pathin);
+		return EXIT_FAILURE;
+	}
+
+	MMIOT *doc = mkd_in(fin, 0);
 
 	if(!doc) {
 		fprintf(stderr, "error: init mkd_string\n");
@@ -29,10 +51,7 @@ int main(void) {
 		return EXIT_FAILURE;
 	}
 	
-	fprintf(stdout, "document size:%d\n", sizeout);	
-	fprintf(stdout, "%s\n", CUTE);	
 	fprintf(stdout, "%s\n", out);
-	fprintf(stdout, "%s\n", CUTE);	
 
 	return EXIT_SUCCESS;
 }
