@@ -1,4 +1,17 @@
 markdom && C
 ===
 
-man 3 markdown
+man 3 markdown and :
+
+- /usr/share/man/man3/mkd-callbacks.3.gz
+- /usr/share/man/man3/mkd-line.3.gz
+- /usr/share/man/man3/mkd-functions.3.gz
+- /usr/share/man/man3/markdown.3.gz
+- /usr/share/man/man7/markdown.7.gz
+- /usr/share/man/man7/mkd-extensions.7.gz
+
+install
+===
+
+* ii  libmarkdown2:amd64     
+* ii  libmarkdown2-dev:amd64
